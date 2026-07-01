@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #020617;
+}
+
+.font-display {
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #f1f5f9;
+  font-size: 0.875rem;
+}
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #22d3ee;
+}
+.btn-primary {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  color: #0b0d12;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.btn-primary:hover { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #1e293b;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #334155;
+}
+.btn-secondary:hover { background: #334155; }

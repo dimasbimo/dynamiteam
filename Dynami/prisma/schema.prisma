@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum StatusMember {
+  AMAN
+  WASPADA
+  TERANCAM_KICK
+  KICK
+}
+
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  role         Role
+  member       Member? @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId     String? @unique
+
+  createdAt DateTime @default(now())
+}
+
+model Member {
+  id               String   @id @default(cuid())
+  nama             String
+  nicknameML       String
+  idML             String
+  roleSquad        String
+  nyawaCurrent     Int      @default(2)
+  activityPoint    Int      @default(0)
+  activityInputted Boolean  @default(false)
+  status           StatusMember @default(WASPADA)
+
+  user    User?
+  history WeeklyHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WeeklyHistory {
+  id            String       @id @default(cuid())
+  member        Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId      String
+  mingguKe      Int
+  tanggal       DateTime     @default(now())
+  activityPoint Int
+  nyawaBefore   Int
+  delta         Int
+  nyawaAfter    Int
+  statusAkhir   StatusMember
+  note          String?
+
+  createdAt DateTime @default(now())
+}
