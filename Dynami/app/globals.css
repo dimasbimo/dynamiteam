@@ -4,8 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --dyn-gold: #facc15;
+  --dyn-gold-deep: #f59e0b;
+  --dyn-cyan: #22d3ee;
+  --dyn-bg: #070a12;
+  --dyn-panel: #0d1220;
+  --dyn-border: rgba(148, 163, 184, 0.14);
+}
+
 html, body {
-  background-color: #020617;
+  background-color: var(--dyn-bg);
 }
 
 .font-display {
@@ -17,36 +26,141 @@ html, body {
   font-family: 'Inter', sans-serif;
 }
 
+/* ===== Panels & cards ===== */
+.dyn-card {
+  background: var(--dyn-panel);
+  border: 1px solid var(--dyn-border);
+  border-radius: 0.9rem;
+}
+
+.dyn-card-accent {
+  position: relative;
+  overflow: hidden;
+}
+.dyn-card-accent::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dyn-gold), var(--dyn-cyan));
+  opacity: 0.7;
+}
+
+.glass-panel {
+  background: rgba(13, 18, 32, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* ===== Inputs & buttons ===== */
 .input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  background: #1e293b;
-  border: 1px solid #334155;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.55rem;
+  background: #131a2b;
+  border: 1px solid #2a3550;
   color: #f1f5f9;
   font-size: 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .input:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #22d3ee;
+  border-color: var(--dyn-cyan);
+  box-shadow: 0 0 0 1px var(--dyn-cyan), 0 0 14px rgba(34, 211, 238, 0.25);
 }
+.input-iconized {
+  padding-left: 2.35rem;
+}
+
 .btn-primary {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.55rem;
+  background: linear-gradient(135deg, var(--dyn-gold), var(--dyn-gold-deep));
   color: #0b0d12;
   font-size: 0.875rem;
   font-weight: 600;
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
-.btn-primary:hover { background: linear-gradient(135deg, #fbbf24, #d97706); }
-.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+}
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
 .btn-secondary {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background: #1e293b;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.55rem;
+  background: #1a2237;
   color: #cbd5e1;
   font-size: 0.875rem;
   font-weight: 500;
-  border: 1px solid #334155;
+  border: 1px solid #2a3550;
+  transition: background 0.15s ease;
 }
-.btn-secondary:hover { background: #334155; }
+.btn-secondary:hover { background: #232e4a; }
+
+.chip {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #2a3550;
+  background: #131a2b;
+  color: #94a3b8;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.chip:hover { color: #e2e8f0; border-color: #3b82a0; }
+.chip-active {
+  background: rgba(34, 211, 238, 0.12);
+  border-color: var(--dyn-cyan);
+  color: var(--dyn-cyan);
+}
+
+/* ===== Animations (sekali jalan, ringan) ===== */
+@keyframes dynFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dynSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dynScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes dynGlowDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(28px, -18px) scale(1.06); }
+}
+@keyframes dynPulseBorder {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.35); }
+  50% { box-shadow: 0 0 0 5px rgba(244, 63, 94, 0); }
+}
+
+.anim-fade { animation: dynFadeIn 0.5s ease-out both; }
+.anim-slide-up { animation: dynSlideUp 0.5s ease-out both; }
+.anim-slide-up-delay { animation: dynSlideUp 0.55s 0.12s ease-out both; }
+.anim-scale { animation: dynScaleIn 0.45s ease-out both; }
+.anim-glow-drift { animation: dynGlowDrift 9s ease-in-out infinite; }
+.anim-pulse-danger { animation: dynPulseBorder 1.8s ease-in-out infinite; }
+
+/* Hormati preferensi pengguna yang mematikan animasi di perangkatnya */
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade, .anim-slide-up, .anim-slide-up-delay, .anim-scale,
+  .anim-glow-drift, .anim-pulse-danger {
+    animation: none;
+  }
+}
