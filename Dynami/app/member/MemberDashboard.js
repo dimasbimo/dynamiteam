@@ -151,25 +151,25 @@ export default function MemberDashboard({ member, history = [], isAdmin = false 
           </div>
 
           <nav className="member-sidebar-nav">
-            <a className="member-sidebar-link member-sidebar-link-active" href="#dashboard">
+            <Link className="member-sidebar-link member-sidebar-link-active" href="/member">
               <Home className="w-4 h-4" />
               <span>Dashboard</span>
-            </a>
+            </Link>
 
-            <a className="member-sidebar-link" href="#activity">
+            <Link className="member-sidebar-link" href="/member/activity">
               <Activity className="w-4 h-4" />
               <span>Aktivitas Saya</span>
-            </a>
+            </Link>
 
-            <a className="member-sidebar-link" href="#history">
+            <Link className="member-sidebar-link" href="/member/history">
               <History className="w-4 h-4" />
               <span>Riwayat Mingguan</span>
-            </a>
+            </Link>
 
-            <a className="member-sidebar-link" href="#profile">
+            <Link className="member-sidebar-link" href="/member/profile">
               <UserRound className="w-4 h-4" />
               <span>Profile</span>
-            </a>
+            </Link>
 
             {isAdmin && (
               <Link href="/admin" className="member-sidebar-link">
@@ -178,13 +178,10 @@ export default function MemberDashboard({ member, history = [], isAdmin = false 
               </Link>
             )}
 
-            <button
-              onClick={() => setShowPasswordModal(true)}
-              className="member-sidebar-link text-left"
-            >
+            <Link className="member-sidebar-link" href="/member/settings">
               <Settings className="w-4 h-4" />
               <span>Pengaturan</span>
-            </button>
+            </Link>
           </nav>
 
           <button

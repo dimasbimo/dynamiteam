@@ -1059,7 +1059,8 @@ html, body {
 .member-sidebar {
   position: sticky;
   top: 1.25rem;
-  height: calc(100vh - 2.5rem);
+  height: fit-content;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   padding: 1.1rem;
@@ -1120,7 +1121,7 @@ html, body {
 }
 
 .member-sidebar-logout {
-  margin-top: auto;
+  margin-top: 1rem;
   display: flex;
   align-items: center;
   gap: 0.7rem;
