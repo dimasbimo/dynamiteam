@@ -1,65 +1,60 @@
-generator client {
-  provider = "prisma-client-js"
-}
+const CredentialsProvider = require('next-auth/providers/credentials').default;
+const bcrypt = require('bcryptjs');
+const { prisma } = require('./prisma');
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+const authOptions = {
+  session: { strategy: 'jwt' },
+  pages: {
+    signIn: '/login',
+  },
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        username: { label: 'ID Login', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) return null;
 
-enum Role {
-  ADMIN
-  MEMBER
-}
+        const user = await prisma.user.findUnique({
+          where: { username: credentials.username.toLowerCase().trim() },
+          include: { member: true },
+        });
+        if (!user) return null;
 
-enum StatusMember {
-  AMAN
-  WASPADA
-  TERANCAM_KICK
-  KICK
-}
+        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+        if (!valid) return null;
 
-model User {
-  id           String  @id @default(cuid())
-  username     String  @unique @map("email")
-  passwordHash String
-  role         Role
-  member       Member? @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  memberId     String? @unique
+        return {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          memberId: user.memberId || null,
+          nama: user.member ? user.member.nama : 'Admin',
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.memberId = user.memberId;
+        token.nama = user.nama;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      session.user.memberId = token.memberId;
+      session.user.nama = token.nama;
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+};
 
-  createdAt DateTime @default(now())
-}
-
-model Member {
-  id               String   @id @default(cuid())
-  nama             String
-  nicknameML       String
-  idML             String
-  roleSquad        String
-  nyawaCurrent     Int      @default(2)
-  activityPoint    Int      @default(0)
-  activityInputted Boolean  @default(false)
-  status           StatusMember @default(WASPADA)
-
-  user    User?
-  history WeeklyHistory[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model WeeklyHistory {
-  id            String       @id @default(cuid())
-  member        Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  memberId      String
-  mingguKe      Int
-  tanggal       DateTime     @default(now())
-  activityPoint Int
-  nyawaBefore   Int
-  delta         Int
-  nyawaAfter    Int
-  statusAkhir   StatusMember
-  note          String?
-
-  createdAt DateTime @default(now())
-}
+module.exports = { authOptions };
