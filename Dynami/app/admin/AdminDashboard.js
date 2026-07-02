@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import {
-  Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, X, Users, LogOut, KeyRound,
+  Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, X, Users, LogOut, KeyRound, User,
 } from 'lucide-react';
 import { NyawaShards, StatusBadge, DeltaTag, ModalShell, Field, fmtDate, MAX_NYAWA } from '../../components/ui';
 import ChangePasswordModal from '../../components/ChangePasswordModal';
@@ -15,6 +16,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const [toast, setToast] = useState(null);
   const [drafts, setDrafts] = useState({});
   const [form, setForm] = useState({ nama: '', nicknameML: '', idML: '', roleSquad: '', email: '', password: '' });
+  const [linkToSelf, setLinkToSelf] = useState(false);
   const [historyItems, setHistoryItems] = useState([]);
   const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -39,7 +41,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     return body;
   }
 
-  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', email: '', password: '' }); setModal({ type: 'add' }); };
+  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', email: '', password: '' }); setLinkToSelf(false); setModal({ type: 'add' }); };
   const openEdit = (m) => { setForm({ nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, email: '', password: '' }); setModal({ type: 'edit', id: m.id }); };
 
   async function submitForm() {
@@ -47,10 +49,10 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     setBusy(true);
     try {
       if (modal.type === 'add') {
-        if (!form.email.trim() || !form.password.trim()) { showError('Email dan password login wajib diisi untuk akun member baru.'); setBusy(false); return; }
-        const { member } = await api('/api/members', { method: 'POST', body: JSON.stringify(form) });
+        if (!linkToSelf && (!form.email.trim() || !form.password.trim())) { showError('Email dan password login wajib diisi untuk akun member baru.'); setBusy(false); return; }
+        const { member } = await api('/api/members', { method: 'POST', body: JSON.stringify({ ...form, linkToSelf }) });
         setMembers((prev) => [...prev, member]);
-        showOk(`${member.nama} ditambahkan ke squad dengan 2 nyawa.`);
+        showOk(linkToSelf ? 'Data member kamu dibuat dan tertaut ke akun admin ini.' : `${member.nama} ditambahkan ke squad dengan 2 nyawa.`);
       } else {
         const { member } = await api(`/api/members/${modal.id}`, { method: 'PATCH', body: JSON.stringify(form) });
         setMembers((prev) => prev.map((m) => (m.id === member.id ? member : m)));
@@ -153,11 +155,14 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
           <div className="flex items-center gap-2.5">
             <img src="/logo-icon.png" alt="DynamiTeam" className="w-10 h-10 object-contain" />
             <div>
-              <h1 className="font-display text-xl font-bold leading-none text-white tracking-wide">Dynami Team</h1>
+              <h1 className="font-display text-xl font-bold leading-none text-white tracking-wide">DynamiTeam</h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">Admin · Minggu ke-{weekNumber}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/member" className="inline-flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300">
+              <User className="w-4 h-4" /> Dashboard Member Saya
+            </Link>
             <button onClick={() => setShowPasswordModal(true)} className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200">
               <KeyRound className="w-4 h-4" /> Ganti Password
             </button>
@@ -271,8 +276,24 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
             <Field label="Role / Posisi"><input value={form.roleSquad} onChange={(e) => setForm((f) => ({ ...f, roleSquad: e.target.value }))} placeholder="Jungler, Roamer, dsb." className="input" /></Field>
             {modal.type === 'add' && (
               <>
-                <Field label="Email login member"><input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="input" /></Field>
-                <Field label="Password awal"><input type="text" value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className="input" placeholder="Member bisa diminta ganti nanti" /></Field>
+                <label className="flex items-start gap-2 cursor-pointer rounded-lg border border-slate-700 bg-slate-800/50 p-3">
+                  <input
+                    type="checkbox"
+                    checked={linkToSelf}
+                    onChange={(e) => setLinkToSelf(e.target.checked)}
+                    className="mt-0.5 accent-amber-500"
+                  />
+                  <span className="text-xs text-slate-300">
+                    <span className="font-medium text-slate-100">Ini data saya sendiri (admin)</span><br />
+                    Tautkan ke akun admin yang sedang login — tanpa membuat akun login baru. Kamu akan bisa melihat nyawa & riwayatmu di Dashboard Member.
+                  </span>
+                </label>
+                {!linkToSelf && (
+                  <>
+                    <Field label="Email login member"><input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="input" /></Field>
+                    <Field label="Password awal"><input type="text" value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className="input" placeholder="Member bisa ganti sendiri nanti" /></Field>
+                  </>
+                )}
               </>
             )}
           </div>

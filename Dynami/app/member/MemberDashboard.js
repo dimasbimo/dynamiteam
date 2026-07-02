@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
-import { LogOut, KeyRound } from 'lucide-react';
+import Link from 'next/link';
+import { LogOut, KeyRound, LayoutDashboard } from 'lucide-react';
 import { NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA } from '../../components/ui';
 import ChangePasswordModal from '../../components/ChangePasswordModal';
 
-export default function MemberDashboard({ member, history }) {
+export default function MemberDashboard({ member, history, isAdmin = false }) {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -23,11 +24,16 @@ export default function MemberDashboard({ member, history }) {
           <div className="flex items-center gap-2.5">
             <img src="/logo-icon.png" alt="DynamiTeam" className="w-10 h-10 object-contain" />
             <div>
-              <h1 className="font-display text-xl font-bold leading-none text-white tracking-wide">Dynami Team</h1>
+              <h1 className="font-display text-xl font-bold leading-none text-white tracking-wide">DynamiTeam</h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">Dashboard Member</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {isAdmin && (
+              <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300">
+                <LayoutDashboard className="w-4 h-4" /> Dashboard Admin
+              </Link>
+            )}
             <button onClick={() => setShowPasswordModal(true)} className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200">
               <KeyRound className="w-4 h-4" /> Ganti Password
             </button>
