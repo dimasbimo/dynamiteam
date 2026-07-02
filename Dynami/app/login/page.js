@@ -61,13 +61,6 @@ export default function LoginPage() {
       <div className="auth-orb auth-orb-right" aria-hidden="true" />
       <div className="auth-embers" aria-hidden="true" />
 
-      {/* Silhouette kanan bawah */}
-      <div className="auth-trophy-scene" aria-hidden="true">
-        <div className="auth-trophy-glow" />
-        <div className="auth-trophy-base" />
-        <div className="auth-trophy-mark" />
-      </div>
-
       <section className="auth-card anim-auth-card">
         <div className="auth-card-glow" aria-hidden="true" />
 
@@ -108,7 +101,7 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="auth-input"
-                placeholder="Masukkan username, nickname, atau ID ML"
+                placeholder="Masukkan username"
                 autoCapitalize="none"
                 autoCorrect="off"
                 autoComplete="username"
