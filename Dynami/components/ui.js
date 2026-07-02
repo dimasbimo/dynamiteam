@@ -77,6 +77,32 @@ export function ActivityMeter({ value, showLabel = true }) {
   );
 }
 
+// Latar dekoratif untuk halaman dashboard. Sengaja BEDA dari login:
+// statis (tanpa animasi drift) dan lebih redup, karena halaman kerja
+// di-scroll lama - layer blur yang beranimasi terus membebani HP kelas
+// menengah. position:fixed supaya tidak dirender ulang saat scroll.
+export function PageBackdrop() {
+  return (
+    <>
+      <div
+        aria-hidden
+        className="pointer-events-none fixed -top-32 -left-24 w-96 h-96 rounded-full blur-3xl opacity-[0.13] -z-10"
+        style={{ background: 'radial-gradient(circle, #facc15, transparent 65%)' }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed -bottom-40 -right-24 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-[0.11] -z-10"
+        style={{ background: 'radial-gradient(circle, #22d3ee, transparent 65%)' }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 h-px -z-10"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(250,204,21,0.4), rgba(34,211,238,0.4), transparent)' }}
+      />
+    </>
+  );
+}
+
 export function EmptyState({ title, hint }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">

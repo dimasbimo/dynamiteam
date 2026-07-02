@@ -5,7 +5,7 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { LogOut, KeyRound, LayoutDashboard, AlertTriangle } from 'lucide-react';
 import {
-  NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA, ActivityMeter, getActivityZone, EmptyState,
+  NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA, ActivityMeter, getActivityZone, EmptyState, PageBackdrop,
 } from '../../components/ui';
 import ChangePasswordModal from '../../components/ChangePasswordModal';
 
@@ -32,14 +32,15 @@ export default function MemberDashboard({ member, history, isAdmin = false }) {
   const isCritical = member.nyawaCurrent === 1 && member.status !== 'KICK';
 
   return (
-    <div className="min-h-screen font-body text-slate-100">
+    <div className="relative min-h-screen font-body text-slate-100 bg-grid">
+      <PageBackdrop />
       {/* Header */}
       <div className="border-b border-slate-800/70 bg-[#0d1220]/80 backdrop-blur sticky top-0 z-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <img src="/logo-icon.png" alt="DynamiTeam" className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0" />
             <div className="min-w-0">
-              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">Dynami Team</h1>
+              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">DynamiTeam</h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">Dashboard Member</p>
             </div>
           </div>

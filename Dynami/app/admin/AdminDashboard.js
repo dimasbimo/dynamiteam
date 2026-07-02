@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import {
   NyawaShards, StatusBadge, DeltaTag, ModalShell, Field, fmtDate, MAX_NYAWA,
-  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES,
+  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES, PageBackdrop,
 } from '../../components/ui';
 import ChangePasswordModal from '../../components/ChangePasswordModal';
 
@@ -20,6 +20,50 @@ const FILTERS = [
   { key: 'TERANCAM_KICK', label: 'Terancam' },
   { key: 'KICK', label: 'Kick' },
 ];
+
+// PENTING: dua komponen ini HARUS di level atas file, BUKAN di dalam
+// AdminDashboard. Komponen yang didefinisikan di dalam komponen lain dibuat
+// ulang setiap render, sehingga React membongkar-pasang elemennya terus -
+// input kehilangan fokus setiap satu ketikan.
+function ActionButtons({ m, large = false, onHistory, onEdit, onReset, onDelete }) {
+  const isKick = m.status === 'KICK';
+  const btn = large ? 'p-2' : 'p-1.5';
+  return (
+    <div className="flex items-center gap-1">
+      <button onClick={() => onHistory(m.id)} title="Riwayat" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><HistoryIcon className="w-4 h-4" /></button>
+      <button onClick={() => onEdit(m)} title="Edit" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><Pencil className="w-4 h-4" /></button>
+      {(m.nyawaCurrent < MAX_NYAWA || isKick) && (
+        <button onClick={() => onReset(m.id)} title="Reset nyawa" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-amber-400`}><RotateCcw className="w-4 h-4" /></button>
+      )}
+      <button onClick={() => onDelete(m.id)} title="Hapus" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-rose-400`}><Trash2 className="w-4 h-4" /></button>
+    </div>
+  );
+}
+
+function ActivityInput({ m, withMeter = false, drafts, setDrafts, commitActivity }) {
+  const isKick = m.status === 'KICK';
+  const draftVal = drafts[m.id] !== undefined ? drafts[m.id] : m.activityPoint;
+  const zone = getActivityZone(m.activityPoint);
+  return (
+    <div>
+      <div className="flex items-center gap-2">
+        <input
+          type="number" min="0" disabled={isKick} inputMode="numeric"
+          value={draftVal}
+          onChange={(e) => setDrafts((d) => ({ ...d, [m.id]: e.target.value }))}
+          onBlur={() => commitActivity(m.id)}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+          className="input w-28"
+        />
+        {!isKick && <span className={`text-[11px] font-medium ${zone.text}`}>{zone.label}</span>}
+      </div>
+      {withMeter && !isKick && <div className="mt-2"><ActivityMeter value={m.activityPoint} showLabel={false} /></div>}
+      <div className={`text-[11px] mt-1 ${m.activityInputted ? 'text-emerald-400' : 'text-slate-500'}`}>
+        {isKick ? 'Terkunci (Kick)' : m.activityInputted ? 'Siap diproses' : 'Belum diinput minggu ini'}
+      </div>
+    </div>
+  );
+}
 
 export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const [members, setMembers] = useState(initialMembers);
@@ -176,55 +220,24 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     });
   }, [members, search, statusFilter]);
 
-  function ActionButtons({ m, large = false }) {
-    const isKick = m.status === 'KICK';
-    const btn = large ? 'p-2' : 'p-1.5';
-    return (
-      <div className="flex items-center gap-1">
-        <button onClick={() => openHistory(m.id)} title="Riwayat" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><HistoryIcon className="w-4 h-4" /></button>
-        <button onClick={() => openEdit(m)} title="Edit" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><Pencil className="w-4 h-4" /></button>
-        {(m.nyawaCurrent < MAX_NYAWA || isKick) && (
-          <button onClick={() => setModal({ type: 'resetConfirm', id: m.id })} title="Reset nyawa" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-amber-400`}><RotateCcw className="w-4 h-4" /></button>
-        )}
-        <button onClick={() => setModal({ type: 'deleteConfirm', id: m.id })} title="Hapus" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-rose-400`}><Trash2 className="w-4 h-4" /></button>
-      </div>
-    );
-  }
-
-  function ActivityInput({ m, withMeter = false }) {
-    const isKick = m.status === 'KICK';
-    const draftVal = drafts[m.id] !== undefined ? drafts[m.id] : m.activityPoint;
-    const zone = getActivityZone(m.activityPoint);
-    return (
-      <div>
-        <div className="flex items-center gap-2">
-          <input
-            type="number" min="0" disabled={isKick} inputMode="numeric"
-            value={draftVal}
-            onChange={(e) => setDrafts((d) => ({ ...d, [m.id]: e.target.value }))}
-            onBlur={() => commitActivity(m.id)}
-            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
-            className="input w-28"
-          />
-          {!isKick && <span className={`text-[11px] font-medium ${zone.text}`}>{zone.label}</span>}
-        </div>
-        {withMeter && !isKick && <div className="mt-2"><ActivityMeter value={m.activityPoint} showLabel={false} /></div>}
-        <div className={`text-[11px] mt-1 ${m.activityInputted ? 'text-emerald-400' : 'text-slate-500'}`}>
-          {isKick ? 'Terkunci (Kick)' : m.activityInputted ? 'Siap diproses' : 'Belum diinput minggu ini'}
-        </div>
-      </div>
-    );
-  }
+  const actionHandlers = {
+    onHistory: openHistory,
+    onEdit: openEdit,
+    onReset: (id) => setModal({ type: 'resetConfirm', id }),
+    onDelete: (id) => setModal({ type: 'deleteConfirm', id }),
+  };
+  const activityProps = { drafts, setDrafts, commitActivity };
 
   return (
-    <div className="min-h-screen font-body text-slate-100">
+    <div className="relative min-h-screen font-body text-slate-100 bg-grid">
+      <PageBackdrop />
       {/* Header */}
       <div className="border-b border-slate-800/70 bg-[#0d1220]/80 backdrop-blur sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <img src="/logo-icon.png" alt="DynamiTeam" className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0" />
             <div className="min-w-0">
-              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">Dynami Team</h1>
+              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">DynamiTeam</h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">Admin · Minggu ke-{weekNumber}</p>
             </div>
           </div>
@@ -322,9 +335,9 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                       </td>
                       <td className="px-4 py-3 text-slate-300 text-xs">{m.idML}</td>
                       <td className="px-4 py-3"><NyawaShards n={m.nyawaCurrent} /></td>
-                      <td className="px-4 py-3"><ActivityInput m={m} /></td>
+                      <td className="px-4 py-3"><ActivityInput m={m} {...activityProps} /></td>
                       <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
-                      <td className="px-4 py-3"><div className="flex justify-end"><ActionButtons m={m} /></div></td>
+                      <td className="px-4 py-3"><div className="flex justify-end"><ActionButtons m={m} {...actionHandlers} /></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -354,9 +367,9 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                   <StatusBadge status={m.status} />
                 </div>
                 <div className="mb-3"><NyawaShards n={m.nyawaCurrent} /></div>
-                <ActivityInput m={m} withMeter />
+                <ActivityInput m={m} withMeter {...activityProps} />
                 <div className="flex justify-end mt-2 pt-2 border-t border-slate-800/60">
-                  <ActionButtons m={m} large />
+                  <ActionButtons m={m} large {...actionHandlers} />
                 </div>
               </div>
             ))
