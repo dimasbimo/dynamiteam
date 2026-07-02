@@ -15,7 +15,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
   const [drafts, setDrafts] = useState({});
-  const [form, setForm] = useState({ nama: '', nicknameML: '', idML: '', roleSquad: '', email: '', password: '' });
+  const [form, setForm] = useState({ nama: '', nicknameML: '', idML: '', roleSquad: '', username: '', password: '' });
   const [linkToSelf, setLinkToSelf] = useState(false);
   const [historyItems, setHistoryItems] = useState([]);
   const [preview, setPreview] = useState(null);
@@ -41,15 +41,15 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     return body;
   }
 
-  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', email: '', password: '' }); setLinkToSelf(false); setModal({ type: 'add' }); };
-  const openEdit = (m) => { setForm({ nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, email: '', password: '' }); setModal({ type: 'edit', id: m.id }); };
+  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', username: '', password: '' }); setLinkToSelf(false); setModal({ type: 'add' }); };
+  const openEdit = (m) => { setForm({ nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, username: '', password: '' }); setModal({ type: 'edit', id: m.id }); };
 
   async function submitForm() {
     if (!form.nama.trim() || !form.nicknameML.trim()) { showError('Nama dan nickname wajib diisi.'); return; }
     setBusy(true);
     try {
       if (modal.type === 'add') {
-        if (!linkToSelf && (!form.email.trim() || !form.password.trim())) { showError('Email dan password login wajib diisi untuk akun member baru.'); setBusy(false); return; }
+        if (!linkToSelf && (!form.username.trim() || !form.password.trim())) { showError('ID login dan password wajib diisi untuk akun member baru.'); setBusy(false); return; }
         const { member } = await api('/api/members', { method: 'POST', body: JSON.stringify({ ...form, linkToSelf }) });
         setMembers((prev) => [...prev, member]);
         showOk(linkToSelf ? 'Data member kamu dibuat dan tertaut ke akun admin ini.' : `${member.nama} ditambahkan ke squad dengan 2 nyawa.`);
@@ -290,7 +290,16 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                 </label>
                 {!linkToSelf && (
                   <>
-                    <Field label="Email login member"><input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="input" /></Field>
+                    <Field label="ID login member">
+                      <input
+                        value={form.username}
+                        onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
+                        className="input"
+                        placeholder="contoh: rajahutan atau fajar123"
+                        autoCapitalize="none" autoCorrect="off"
+                      />
+                      <span className="block text-[11px] text-slate-500 mt-1">3-30 karakter, huruf/angka/titik/strip/underscore, tanpa spasi. Ini yang dipakai member untuk login.</span>
+                    </Field>
                     <Field label="Password awal"><input type="text" value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className="input" placeholder="Member bisa ganti sendiri nanti" /></Field>
                   </>
                 )}

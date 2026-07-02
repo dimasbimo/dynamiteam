@@ -15,7 +15,7 @@ async function POST(req) {
   if (error) return error;
 
   const body = await req.json();
-  const { nama, nicknameML, idML, roleSquad, email, password, linkToSelf } = body;
+  const { nama, nicknameML, idML, roleSquad, username, password, linkToSelf } = body;
 
   if (!nama?.trim() || !nicknameML?.trim()) {
     return Response.json({ error: 'Nama dan nickname wajib diisi.' }, { status: 400 });
@@ -42,13 +42,18 @@ async function POST(req) {
     return Response.json({ member });
   }
 
-  if (!email?.trim() || !password?.trim()) {
-    return Response.json({ error: 'Email dan password wajib diisi untuk akun member baru.' }, { status: 400 });
+  if (!username?.trim() || !password?.trim()) {
+    return Response.json({ error: 'ID login dan password wajib diisi untuk akun member baru.' }, { status: 400 });
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+  const cleanUsername = username.toLowerCase().trim();
+  if (!/^[a-z0-9._-]{3,30}$/.test(cleanUsername)) {
+    return Response.json({ error: 'ID login harus 3-30 karakter, hanya huruf/angka/titik/strip/underscore, tanpa spasi.' }, { status: 400 });
+  }
+
+  const existingUser = await prisma.user.findUnique({ where: { username: cleanUsername } });
   if (existingUser) {
-    return Response.json({ error: 'Email tersebut sudah dipakai akun lain.' }, { status: 400 });
+    return Response.json({ error: 'ID login tersebut sudah dipakai akun lain.' }, { status: 400 });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -63,7 +68,7 @@ async function POST(req) {
       status: 'WASPADA',
       user: {
         create: {
-          email: email.toLowerCase().trim(),
+          username: cleanUsername,
           passwordHash,
           role: 'MEMBER',
         },
