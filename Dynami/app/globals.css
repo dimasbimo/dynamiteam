@@ -821,3 +821,232 @@ html, body {
 .auth-links-single a {
   text-align: center;
 }
+
+/* =========================================================
+   LOGIN PAGE — MOBILE POLISH
+   Tambahkan di paling bawah app/globals.css
+========================================================= */
+
+@media (max-width: 640px) {
+  .auth-page {
+    min-height: 100dvh;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(245, 193, 93, 0.16), transparent 34%),
+      radial-gradient(circle at 100% 80%, rgba(245, 158, 11, 0.12), transparent 30%),
+      linear-gradient(180deg, #030712 0%, #070b14 48%, #020617 100%);
+  }
+
+  .auth-bg-layer {
+    opacity: 0.72;
+  }
+
+  .auth-bg-layer::before {
+    opacity: 0.25;
+  }
+
+  .auth-gold-line {
+    width: 260px;
+    opacity: 0.45;
+  }
+
+  .auth-gold-line-1 {
+    top: 8%;
+    left: -32%;
+  }
+
+  .auth-gold-line-2 {
+    top: 88%;
+    right: -35%;
+  }
+
+  .auth-orb {
+    filter: blur(42px);
+    opacity: 0.2;
+  }
+
+  .auth-orb-left {
+    width: 18rem;
+    height: 18rem;
+    left: -10rem;
+    bottom: 12rem;
+  }
+
+  .auth-orb-right {
+    width: 20rem;
+    height: 20rem;
+    right: -11rem;
+    bottom: -7rem;
+  }
+
+  .auth-embers {
+    opacity: 0.42;
+    background-size: 120px 120px, 170px 170px;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    min-height: auto;
+    padding: 1.45rem 1rem 1.2rem;
+    border-radius: 1.15rem;
+    background:
+      linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(2, 6, 23, 0.9)),
+      radial-gradient(circle at 50% 0%, rgba(245, 193, 93, 0.16), transparent 35%);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.025) inset,
+      0 0 28px rgba(245, 193, 93, 0.1),
+      0 18px 56px rgba(0, 0, 0, 0.68);
+  }
+
+  .auth-brand {
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+
+  .auth-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .auth-brand-title {
+    font-size: 2rem;
+    line-height: 0.95;
+  }
+
+  .auth-brand-subtitle {
+    margin-top: 0.28rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.28em;
+  }
+
+  .auth-heading {
+    margin-bottom: 1.35rem;
+  }
+
+  .auth-heading h2 {
+    font-size: 1.82rem;
+    line-height: 1.05;
+  }
+
+  .auth-heading p {
+    max-width: 300px;
+    margin: 0.6rem auto 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #a1a1aa;
+  }
+
+  .auth-form {
+    gap: 0.9rem;
+  }
+
+  .auth-field-group {
+    gap: 0.45rem;
+  }
+
+  .auth-label {
+    font-size: 0.75rem;
+  }
+
+  .auth-label-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .auth-input {
+    height: 50px;
+    padding-left: 2.75rem;
+    padding-right: 0.9rem;
+    border-radius: 0.72rem;
+    font-size: 0.84rem;
+  }
+
+  .auth-input-password {
+    padding-right: 3rem;
+  }
+
+  .auth-input-icon {
+    left: 0.92rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .auth-eye-button {
+    right: 0.72rem;
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .auth-error {
+    padding: 0.68rem 0.75rem;
+    border-radius: 0.72rem;
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .auth-login-button {
+    height: 52px;
+    margin-top: 0.35rem;
+    border-radius: 0.75rem;
+    font-size: 0.98rem;
+  }
+
+  .auth-button-icon {
+    right: 1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .auth-links,
+  .auth-links-single {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-page {
+    padding: 0.75rem;
+  }
+
+  .auth-card {
+    padding: 1.25rem 0.85rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .auth-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .auth-brand-title {
+    font-size: 1.75rem;
+  }
+
+  .auth-brand-subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+  }
+
+  .auth-heading h2 {
+    font-size: 1.58rem;
+  }
+
+  .auth-heading p {
+    font-size: 0.76rem;
+  }
+
+  .auth-input {
+    height: 48px;
+    font-size: 0.8rem;
+  }
+
+  .auth-login-button {
+    height: 50px;
+  }
+}
