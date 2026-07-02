@@ -2,7 +2,7 @@ import './globals.css';
 import Providers from './providers';
 
 export const metadata = {
-  title: 'DynamiTeam — Squad Vitality Tracker',
+  title: 'Dynami Team',
   description: 'Sistem manajemen keaktifan member squad Mobile Legends DynamiTeam',
   icons: { icon: '/favicon.png' },
 };

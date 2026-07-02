@@ -41,7 +41,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm relative">
         <div className="flex flex-col items-center mb-6 anim-scale">
           <img src="/logo-icon.png" alt="DynamiTeam" className="w-24 h-24 object-contain mb-3 drop-shadow-[0_0_18px_rgba(250,204,21,0.35)]" />
-          <h1 className="font-display text-2xl font-bold text-white tracking-wide text-center">DynamiTeam Dashboard</h1>
+          <h1 className="font-display text-2xl font-bold text-white tracking-wide text-center">Dynami Team</h1>
           <p className="text-xs text-slate-400 mt-1">Squad Activity &amp; Life Point System</p>
         </div>
 

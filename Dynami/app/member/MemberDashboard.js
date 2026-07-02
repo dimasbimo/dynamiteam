@@ -39,7 +39,7 @@ export default function MemberDashboard({ member, history, isAdmin = false }) {
           <div className="flex items-center gap-2.5 min-w-0">
             <img src="/logo-icon.png" alt="DynamiTeam" className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0" />
             <div className="min-w-0">
-              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">DynamiTeam</h1>
+              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">Dynami Team</h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">Dashboard Member</p>
             </div>
           </div>
